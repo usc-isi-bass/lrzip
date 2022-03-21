@@ -219,6 +219,9 @@ static i64 unzip_match(rzip_control *control, void *ss, i64 len, uint32 *cksum, 
 
 	while (len) {
 		n = MIN(len, offset);
+#ifdef MAGMA_ENABLE_CANARIES
+        MAGMA_LOG("ZIP001", n < 1);
+#endif
 
 		if (unlikely(read_fdhist(control, off_buf, (size_t)n) != (ssize_t)n)) {
 			free(buf);

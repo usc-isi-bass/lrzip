@@ -1744,6 +1744,9 @@ i64 read_stream(rzip_control *control, void *ss, int streamno, uchar *p, i64 len
 		n = MIN(sinfo->s[streamno].buflen - sinfo->s[streamno].bufp, len);
 
 		if (n > 0) {
+#ifdef MAGMA_ENABLE_CANARIES
+        MAGMA_LOG("ZIP002", !sinfo->s[streamno].buf);
+#endif
 			memcpy(p, sinfo->s[streamno].buf + sinfo->s[streamno].bufp, n);
 			sinfo->s[streamno].bufp += n;
 			p += n;
