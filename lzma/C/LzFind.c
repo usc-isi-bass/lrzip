@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /* LzFind.c -- Match finder for LZ algorithms
 2009-04-22 : Igor Pavlov : Public domain */
 
@@ -27,6 +32,9 @@ static void LzInWindow_Free(CMatchFinder *p, ISzAlloc *alloc)
 
 static int LzInWindow_Create(CMatchFinder *p, UInt32 keepSizeReserv, ISzAlloc *alloc)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(96);
+#endif
   UInt32 blockSize = p->keepSizeBefore + p->keepSizeAfter + keepSizeReserv;
   if (p->directInput)
   {
@@ -56,6 +64,9 @@ void MatchFinder_ReduceOffsets(CMatchFinder *p, UInt32 subValue)
 
 static void MatchFinder_ReadBlock(CMatchFinder *p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(97);
+#endif
   if (p->streamEndWasReached || p->result != SZ_OK)
     return;
   if (p->directInput)
@@ -132,6 +143,9 @@ static void MatchFinder_SetDefaultSettings(CMatchFinder *p)
 
 void MatchFinder_Construct(CMatchFinder *p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(98);
+#endif
   UInt32 i;
   p->bufferBase = 0;
   p->directInput = 0;
@@ -172,6 +186,9 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize,
     UInt32 keepAddBufferBefore, UInt32 matchMaxLen, UInt32 keepAddBufferAfter,
     ISzAlloc *alloc)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(99);
+#endif
   UInt32 sizeReserv;
   if (historySize > kMaxHistorySize)
   {
@@ -245,6 +262,9 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize,
 
 static void MatchFinder_SetLimits(CMatchFinder *p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(100);
+#endif
   UInt32 limit = kMaxValForNormalize - p->pos;
   UInt32 limit2 = p->cyclicBufferSize - p->cyclicBufferPos;
   if (limit2 < limit)
@@ -270,6 +290,9 @@ static void MatchFinder_SetLimits(CMatchFinder *p)
 
 void MatchFinder_Init(CMatchFinder *p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(101);
+#endif
   UInt32 i;
   for (i = 0; i < p->hashSizeSum; i++)
     p->hash[i] = kEmptyHashValue;
@@ -289,6 +312,9 @@ static UInt32 MatchFinder_GetSubValue(CMatchFinder *p)
 
 void MatchFinder_Normalize3(UInt32 subValue, CLzRef *items, UInt32 numItems)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(102);
+#endif
   UInt32 i;
   for (i = 0; i < numItems; i++)
   {
@@ -310,6 +336,9 @@ static void MatchFinder_Normalize(CMatchFinder *p)
 
 static void MatchFinder_CheckLimits(CMatchFinder *p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(103);
+#endif
   if (p->pos == kMaxValForNormalize)
     MatchFinder_Normalize(p);
   if (!p->streamEndWasReached && p->keepSizeAfter == p->streamPos - p->pos)
@@ -323,6 +352,9 @@ static UInt32 * Hc_GetMatchesSpec(UInt32 lenLimit, UInt32 curMatch, UInt32 pos, 
     UInt32 _cyclicBufferPos, UInt32 _cyclicBufferSize, UInt32 cutValue,
     UInt32 *distances, UInt32 maxLen)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(104);
+#endif
   son[_cyclicBufferPos] = curMatch;
   for (;;)
   {
@@ -354,6 +386,9 @@ UInt32 * GetMatchesSpec1(UInt32 lenLimit, UInt32 curMatch, UInt32 pos, const Byt
     UInt32 _cyclicBufferPos, UInt32 _cyclicBufferSize, UInt32 cutValue,
     UInt32 *distances, UInt32 maxLen)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(105);
+#endif
   CLzRef *ptr0 = son + (_cyclicBufferPos << 1) + 1;
   CLzRef *ptr1 = son + (_cyclicBufferPos << 1);
   UInt32 len0 = 0, len1 = 0;
@@ -408,6 +443,9 @@ UInt32 * GetMatchesSpec1(UInt32 lenLimit, UInt32 curMatch, UInt32 pos, const Byt
 static void SkipMatchesSpec(UInt32 lenLimit, UInt32 curMatch, UInt32 pos, const Byte *cur, CLzRef *son,
     UInt32 _cyclicBufferPos, UInt32 _cyclicBufferSize, UInt32 cutValue)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(106);
+#endif
   CLzRef *ptr0 = son + (_cyclicBufferPos << 1) + 1;
   CLzRef *ptr1 = son + (_cyclicBufferPos << 1);
   UInt32 len0 = 0, len1 = 0;
@@ -483,6 +521,9 @@ static void MatchFinder_MovePos(CMatchFinder *p) { MOVE_POS; }
 
 static UInt32 Bt2_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(107);
+#endif
   UInt32 offset;
   GET_MATCHES_HEADER(2)
   HASH2_CALC;
@@ -494,6 +535,9 @@ static UInt32 Bt2_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 
 UInt32 Bt3Zip_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(108);
+#endif
   UInt32 offset;
   GET_MATCHES_HEADER(3)
   HASH_ZIP_CALC;
@@ -505,6 +549,9 @@ UInt32 Bt3Zip_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 
 static UInt32 Bt3_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(109);
+#endif
   UInt32 hash2Value, delta2, maxLen, offset;
   GET_MATCHES_HEADER(3)
 
@@ -538,6 +585,9 @@ static UInt32 Bt3_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 
 static UInt32 Bt4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(110);
+#endif
   UInt32 hash2Value, hash3Value, delta2, delta3, maxLen, offset;
   GET_MATCHES_HEADER(4)
 
@@ -585,6 +635,9 @@ static UInt32 Bt4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 
 static UInt32 Hc4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(111);
+#endif
   UInt32 hash2Value, hash3Value, delta2, delta3, maxLen, offset;
   GET_MATCHES_HEADER(4)
 
@@ -634,6 +687,9 @@ static UInt32 Hc4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 
 UInt32 Hc3Zip_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(112);
+#endif
   UInt32 offset;
   GET_MATCHES_HEADER(3)
   HASH_ZIP_CALC;
@@ -646,6 +702,9 @@ UInt32 Hc3Zip_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 
 static void Bt2_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(113);
+#endif
   do
   {
     SKIP_HEADER(2)
@@ -659,6 +718,9 @@ static void Bt2_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 
 void Bt3Zip_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(114);
+#endif
   do
   {
     SKIP_HEADER(3)
@@ -672,6 +734,9 @@ void Bt3Zip_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 
 static void Bt3_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(115);
+#endif
   do
   {
     UInt32 hash2Value;
@@ -687,6 +752,9 @@ static void Bt3_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 
 static void Bt4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(116);
+#endif
   do
   {
     UInt32 hash2Value, hash3Value;
@@ -703,6 +771,9 @@ static void Bt4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 
 static void Hc4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(117);
+#endif
   do
   {
     UInt32 hash2Value, hash3Value;
@@ -720,6 +791,9 @@ static void Hc4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 
 void Hc3Zip_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(118);
+#endif
   do
   {
     SKIP_HEADER(3)
@@ -734,6 +808,9 @@ void Hc3Zip_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 
 void MatchFinder_CreateVTable(CMatchFinder *p, IMatchFinder *vTable)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(119);
+#endif
   vTable->Init = (Mf_Init_Func)MatchFinder_Init;
   vTable->GetIndexByte = (Mf_GetIndexByte_Func)MatchFinder_GetIndexByte;
   vTable->GetNumAvailableBytes = (Mf_GetNumAvailableBytes_Func)MatchFinder_GetNumAvailableBytes;

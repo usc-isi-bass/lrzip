@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /*
    Copyright (C) 2006-2016 Con Kolivas
    Copyright (C) 1998-2003 Andrew Tridgell
@@ -50,6 +55,9 @@
 
 static inline uchar read_u8(rzip_control *control, void *ss, int stream, bool *err)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(36);
+#endif
 	uchar b;
 
 	if (unlikely(read_stream(control, ss, stream, &b, 1) != 1)) {
@@ -61,6 +69,9 @@ static inline uchar read_u8(rzip_control *control, void *ss, int stream, bool *e
 
 static inline u32 read_u32(rzip_control *control, void *ss, int stream, bool *err)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(37);
+#endif
 	u32 ret;
 
 	if (unlikely(read_stream(control, ss, stream, (uchar *)&ret, 4) != 4)) {
@@ -91,6 +102,9 @@ static i64 seekcur_fdout(rzip_control *control)
 
 static i64 seekto_fdhist(rzip_control *control, i64 pos)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(38);
+#endif
 	if (!TMP_OUTBUF)
 		return lseek(control->fd_hist, pos, SEEK_SET);
 	control->hist_ofs = pos - control->out_relofs;
@@ -112,6 +126,9 @@ static i64 seekcur_fdin(rzip_control *control)
 
 static i64 seekto_fdin(rzip_control *control, i64 pos)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(39);
+#endif
 	if (!TMP_INBUF)
 		return lseek(control->fd_in, pos, SEEK_SET);
 	if (unlikely(pos > control->in_len || pos < 0)) {
@@ -124,6 +141,9 @@ static i64 seekto_fdin(rzip_control *control, i64 pos)
 
 static i64 seekto_fdinend(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(40);
+#endif
 	int tmpchar;
 
 	if (!TMP_INBUF)
@@ -149,6 +169,9 @@ static i64 read_header(rzip_control *control, void *ss, uchar *head)
 
 static i64 unzip_literal(rzip_control *control, void *ss, i64 len, uint32 *cksum)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(41);
+#endif
 	i64 stream_read;
 	uchar *buf;
 
@@ -181,6 +204,9 @@ static i64 unzip_literal(rzip_control *control, void *ss, i64 len, uint32 *cksum
 
 static i64 read_fdhist(rzip_control *control, void *buf, i64 len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(42);
+#endif
 	if (!TMP_OUTBUF)
 		return read_1g(control, control->fd_hist, buf, len);
 	if (unlikely(len + control->hist_ofs > control->out_maxlen)) {
@@ -193,6 +219,9 @@ static i64 read_fdhist(rzip_control *control, void *buf, i64 len)
 
 static i64 unzip_match(rzip_control *control, void *ss, i64 len, uint32 *cksum, int chunk_bytes)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(43);
+#endif
 	i64 offset, n, total, cur_pos;
 	uchar *buf, *off_buf;
 
@@ -252,6 +281,9 @@ static i64 unzip_match(rzip_control *control, void *ss, i64 len, uint32 *cksum, 
  */
 static i64 runzip_chunk(rzip_control *control, int fd_in, i64 expected_size, i64 tally)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(44);
+#endif
 	uint32 good_cksum, cksum = 0;
 	i64 len, ofs, total = 0;
 	int l = -1, p = 0;
@@ -372,6 +404,9 @@ static i64 runzip_chunk(rzip_control *control, int fd_in, i64 expected_size, i64
  */
 i64 runzip_fd(rzip_control *control, int fd_in, int fd_out, int fd_hist, i64 expected_size)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(45);
+#endif
 	uchar md5_stored[MD5_DIGEST_SIZE];
 	struct timeval start,end;
 	i64 total = 0, u;

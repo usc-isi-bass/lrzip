@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /*
    Copyright (C) 2012-2016 Con Kolivas
 
@@ -40,6 +45,9 @@
 # define fmemopen(s, len, modes) fake_fmemopen((s), (len), (modes))
 static FILE *fake_fmemopen(void *buf, size_t buflen, const char *mode)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(46);
+#endif
 	FILE *in;
 
 	in = tmpfile();
@@ -63,6 +71,9 @@ static void liblrzip_index_update(size_t x, size_t *idx, void **queue)
 
 static bool liblrzip_setup_flags(Lrzip *lr)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(47);
+#endif
 	if (!lr)
 		return false;
 #define MODE_CHECK(X) \
@@ -135,6 +146,9 @@ bool lrzip_init(void)
 
 void lrzip_config_env(Lrzip *lr)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(48);
+#endif
 	const char *eptr;
 	/* Get Preloaded Defaults from lrzip.conf
 	 * Look in ., $HOME/.lrzip/, /etc/lrzip.
@@ -149,6 +163,9 @@ void lrzip_config_env(Lrzip *lr)
 
 void lrzip_free(Lrzip *lr)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(49);
+#endif
 	size_t x;
 
 	if ((!lr) || (!lr->infilename_buckets))
@@ -163,6 +180,9 @@ void lrzip_free(Lrzip *lr)
 
 Lrzip *lrzip_new(Lrzip_Mode mode)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(50);
+#endif
 	Lrzip *lr;
 
 	lr = calloc(1, sizeof(Lrzip));
@@ -297,6 +317,9 @@ char **lrzip_filenames_get(Lrzip *lr)
 
 bool lrzip_file_add(Lrzip *lr, FILE *file)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(51);
+#endif
 	if ((!lr) || (!file))
 		return false;
 	if (lr->infilenames)
@@ -321,6 +344,9 @@ bool lrzip_file_add(Lrzip *lr, FILE *file)
 
 bool lrzip_file_del(Lrzip *lr, FILE *file)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(52);
+#endif
 	size_t x;
 
 	if ((!lr) || (!file))
@@ -360,6 +386,9 @@ void lrzip_files_clear(Lrzip *lr)
 
 bool lrzip_filename_add(Lrzip *lr, const char *file)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(53);
+#endif
 	struct stat st;
 
 	if ((!lr) || (!file) || (!file[0]) || (!strcmp(file, "-")))
@@ -391,6 +420,9 @@ bool lrzip_filename_add(Lrzip *lr, const char *file)
 
 bool lrzip_filename_del(Lrzip *lr, const char *file)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(54);
+#endif
 	size_t x;
 
 	if ((!lr) || (!file) || (!file[0]))
@@ -423,6 +455,9 @@ const char *lrzip_filename_pop(Lrzip *lr)
 
 void lrzip_filenames_clear(Lrzip *lr)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(55);
+#endif
 	size_t x;
 	if ((!lr) || (!lr->infilename_buckets))
 		return;
@@ -449,6 +484,9 @@ const char *lrzip_suffix_get(Lrzip *lr)
 
 void lrzip_outdir_set(Lrzip *lr, const char *dir)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(56);
+#endif
 	const char *slash;
 	char *buf;
 	size_t len;
@@ -495,6 +533,9 @@ FILE *lrzip_outfile_get(Lrzip *lr)
 
 void lrzip_outfilename_set(Lrzip *lr, const char *file)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(57);
+#endif
 	if ((!lr) || (file && (!file[0])))
 		return;
 	if (lr->control->outFILE)
@@ -521,6 +562,9 @@ const unsigned char *lrzip_md5digest_get(Lrzip *lr)
 
 bool lrzip_run(Lrzip *lr)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(58);
+#endif
 	struct timeval start_time, end_time;
 	rzip_control *control;
 	double seconds,total_time; // for timers
@@ -648,6 +692,9 @@ void lrzip_info_cb_set(Lrzip *lr, Lrzip_Info_Cb cb, void *data)
 
 bool lrzip_compress_full(void *dest, unsigned long *dest_len, const void *source, unsigned long source_len, Lrzip_Mode mode, int compress_level)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(59);
+#endif
 	FILE *s = NULL, *d = NULL;
 	Lrzip *lr = NULL;
 	bool ret = false;
@@ -697,6 +744,9 @@ out:
 
 bool lrzip_decompress(void *dest, unsigned long *dest_len, const void *source, unsigned long source_len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(60);
+#endif
 	FILE *s = NULL, *d = NULL;
 	Lrzip *lr = NULL;
 	bool ret = false;

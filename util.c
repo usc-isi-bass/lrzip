@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /*
    Copyright (C) 2006-2016 Con Kolivas
    Copyright (C) 2011 Serge Belyshev
@@ -92,6 +97,9 @@ void unlink_files(rzip_control *control)
 
 void fatal_exit(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(28);
+#endif
 	struct termios termios_p;
 
 	/* Make sure we haven't died after disabling stdin echo */
@@ -107,6 +115,9 @@ void fatal_exit(rzip_control *control)
 
 void setup_overhead(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(29);
+#endif
 	/* Work out the compression overhead per compression thread for the
 	 * compression back-ends that need a lot of ram */
 	if (LZMA_COMPRESS) {
@@ -124,6 +135,9 @@ void setup_overhead(rzip_control *control)
 
 void setup_ram(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(30);
+#endif
 	/* Use less ram when using STDOUT to store the temporary output file. */
 	if (STDOUT && ((STDIN && DECOMPRESS) || !(DECOMPRESS || TEST_ONLY)))
 		control->maxram = control->ramsize / 6;
@@ -163,6 +177,9 @@ size_t round_up_page(rzip_control *control, size_t len)
 
 bool get_rand(rzip_control *control, uchar *buf, int len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(31);
+#endif
 	int fd, i;
 
 	fd = open("/dev/urandom", O_RDONLY);
@@ -180,6 +197,9 @@ bool get_rand(rzip_control *control, uchar *buf, int len)
 
 bool read_config(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(32);
+#endif
 	/* check for lrzip.conf in ., $HOME/.lrzip and /etc/lrzip */
 	char *HOME, homeconf[255];
 	char *parametervalue;
@@ -338,6 +358,9 @@ static void xor128 (void *pa, const void *pb)
 
 static void lrz_keygen(const rzip_control *control, const uchar *salt, uchar *key, uchar *iv)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(33);
+#endif
 	uchar buf [HASH_LEN + SALT_LEN + PASS_LEN];
 	mlock(buf, HASH_LEN + SALT_LEN + PASS_LEN);
 
@@ -357,6 +380,9 @@ static void lrz_keygen(const rzip_control *control, const uchar *salt, uchar *ke
 
 bool lrz_crypt(const rzip_control *control, uchar *buf, i64 len, const uchar *salt, int encrypt)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(34);
+#endif
 	/* Encryption requires CBC_LEN blocks so we can use ciphertext
 	* stealing to not have to pad the block */
 	uchar key[HASH_LEN], iv[HASH_LEN];
@@ -424,6 +450,9 @@ error:
 
 void lrz_stretch(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(35);
+#endif
 	sha4_context ctx;
 	i64 j, n, counter;
 

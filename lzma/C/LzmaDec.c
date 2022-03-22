@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /* LzmaDec.c -- LZMA Decoder
 2009-09-20 : Igor Pavlov : Public domain */
 
@@ -130,6 +135,9 @@ Out:
 
 static int MY_FAST_CALL LzmaDec_DecodeReal(CLzmaDec *p, SizeT limit, const Byte *bufLimit)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(120);
+#endif
   CLzmaProb *probs = p->probs;
 
   unsigned state = p->state;
@@ -427,6 +435,9 @@ static int MY_FAST_CALL LzmaDec_DecodeReal(CLzmaDec *p, SizeT limit, const Byte 
 
 static void MY_FAST_CALL LzmaDec_WriteRem(CLzmaDec *p, SizeT limit)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(121);
+#endif
   if (p->remainLen != 0 && p->remainLen < kMatchSpecLenStart)
   {
     Byte *dic = p->dic;
@@ -453,6 +464,9 @@ static void MY_FAST_CALL LzmaDec_WriteRem(CLzmaDec *p, SizeT limit)
 
 static int MY_FAST_CALL LzmaDec_DecodeReal2(CLzmaDec *p, SizeT limit, const Byte *bufLimit)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(122);
+#endif
   do
   {
     SizeT limit2 = limit;
@@ -486,6 +500,9 @@ typedef enum
 
 static ELzmaDummy LzmaDec_TryDummy(const CLzmaDec *p, const Byte *buf, SizeT inSize)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(123);
+#endif
   UInt32 range = p->range;
   UInt32 code = p->code;
   const Byte *bufLimit = buf + inSize;
@@ -684,6 +701,9 @@ static void LzmaDec_InitRc(CLzmaDec *p, const Byte *data)
 
 void LzmaDec_InitDicAndState(CLzmaDec *p, Bool initDic, Bool initState)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(124);
+#endif
   p->needFlush = 1;
   p->remainLen = 0;
   p->tempBufSize = 0;
@@ -706,6 +726,9 @@ void LzmaDec_Init(CLzmaDec *p)
 
 static void LzmaDec_InitStateReal(CLzmaDec *p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(125);
+#endif
   UInt32 numProbs = Literal + ((UInt32)LZMA_LIT_SIZE << (p->prop.lc + p->prop.lp));
   UInt32 i;
   CLzmaProb *probs = p->probs;
@@ -719,6 +742,9 @@ static void LzmaDec_InitStateReal(CLzmaDec *p)
 SRes LzmaDec_DecodeToDic(CLzmaDec *p, SizeT dicLimit, const Byte *src, SizeT *srcLen,
     ELzmaFinishMode finishMode, ELzmaStatus *status)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(126);
+#endif
   SizeT inSize = *srcLen;
   (*srcLen) = 0;
   LzmaDec_WriteRem(p, dicLimit);
@@ -839,6 +865,9 @@ SRes LzmaDec_DecodeToDic(CLzmaDec *p, SizeT dicLimit, const Byte *src, SizeT *sr
 
 SRes LzmaDec_DecodeToBuf(CLzmaDec *p, Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen, ELzmaFinishMode finishMode, ELzmaStatus *status)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(127);
+#endif
   SizeT outSize = *destLen;
   SizeT inSize = *srcLen;
   *srcLen = *destLen = 0;
@@ -897,6 +926,9 @@ void LzmaDec_Free(CLzmaDec *p, ISzAlloc *alloc)
 
 SRes LzmaProps_Decode(CLzmaProps *p, const Byte *data, unsigned size)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(128);
+#endif
   UInt32 dicSize;
   Byte d;
   
@@ -923,6 +955,9 @@ SRes LzmaProps_Decode(CLzmaProps *p, const Byte *data, unsigned size)
 
 static SRes LzmaDec_AllocateProbs2(CLzmaDec *p, const CLzmaProps *propNew, ISzAlloc *alloc)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(129);
+#endif
   UInt32 numProbs = LzmaProps_GetNumProbs(propNew);
   if (p->probs == 0 || numProbs != p->numProbs)
   {
@@ -946,6 +981,9 @@ SRes LzmaDec_AllocateProbs(CLzmaDec *p, const Byte *props, unsigned propsSize, I
 
 SRes LzmaDec_Allocate(CLzmaDec *p, const Byte *props, unsigned propsSize, ISzAlloc *alloc)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(130);
+#endif
   CLzmaProps propNew;
   SizeT dicBufSize;
   RINOK(LzmaProps_Decode(&propNew, props, propsSize));
@@ -970,6 +1008,9 @@ SRes LzmaDecode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,
     const Byte *propData, unsigned propSize, ELzmaFinishMode finishMode,
     ELzmaStatus *status, ISzAlloc *alloc)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(131);
+#endif
   CLzmaDec p;
   SRes res;
   SizeT inSize = *srcLen;

@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /*
    Copyright (C) 2011 Serge Belyshev
    Copyright (C) 2006-2016 Con Kolivas
@@ -166,6 +171,9 @@ static int lzo_compresses(rzip_control *control, uchar *s_buf, i64 s_len);
 
 static int zpaq_compress_buf(rzip_control *control, struct compress_thread *cthread, long thread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(61);
+#endif
 	i64 c_len, c_size;
 	uchar *c_buf;
 
@@ -200,6 +208,9 @@ static int zpaq_compress_buf(rzip_control *control, struct compress_thread *cthr
 
 static int bzip2_compress_buf(rzip_control *control, struct compress_thread *cthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(62);
+#endif
 	u32 dlen = round_up_page(control, cthread->s_len);
 	int bzip2_ret;
 	uchar *c_buf;
@@ -249,6 +260,9 @@ static int bzip2_compress_buf(rzip_control *control, struct compress_thread *cth
 
 static int gzip_compress_buf(rzip_control *control, struct compress_thread *cthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(63);
+#endif
 	unsigned long dlen = round_up_page(control, cthread->s_len);
 	uchar *c_buf;
 	int gzip_ret;
@@ -294,6 +308,9 @@ static int gzip_compress_buf(rzip_control *control, struct compress_thread *cthr
 
 static int lzma_compress_buf(rzip_control *control, struct compress_thread *cthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(64);
+#endif
 	unsigned char lzma_properties[5]; /* lzma properties, encoded */
 	int lzma_level, lzma_ret;
 	size_t prop_size = 5; /* return value for lzma_properties */
@@ -389,6 +406,9 @@ retry:
 
 static int lzo_compress_buf(rzip_control *control, struct compress_thread *cthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(65);
+#endif
 	lzo_uint in_len = cthread->s_len;
 	lzo_uint dlen = round_up_page(control, in_len + in_len / 16 + 64 + 3);
 	lzo_bytep wrkmem;
@@ -437,6 +457,9 @@ out_free:
 */
 static int zpaq_decompress_buf(rzip_control *control __UNUSED__, struct uncomp_thread *ucthread, long thread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(66);
+#endif
 	i64 dlen = ucthread->u_len;
 	uchar *c_buf;
 	int ret = 0;
@@ -467,6 +490,9 @@ out:
 
 static int bzip2_decompress_buf(rzip_control *control __UNUSED__, struct uncomp_thread *ucthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(67);
+#endif
 	u32 dlen = ucthread->u_len;
 	int ret = 0, bzerr;
 	uchar *c_buf;
@@ -502,6 +528,9 @@ out:
 
 static int gzip_decompress_buf(rzip_control *control __UNUSED__, struct uncomp_thread *ucthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(68);
+#endif
 	unsigned long dlen = ucthread->u_len;
 	int ret = 0, gzerr;
 	uchar *c_buf;
@@ -537,6 +566,9 @@ out:
 
 static int lzma_decompress_buf(rzip_control *control, struct uncomp_thread *ucthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(69);
+#endif
 	size_t dlen = ucthread->u_len;
 	int ret = 0, lzmaerr;
 	uchar *c_buf;
@@ -575,6 +607,9 @@ out:
 
 static int lzo_decompress_buf(rzip_control *control __UNUSED__, struct uncomp_thread *ucthread)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(70);
+#endif
 	lzo_uint dlen = ucthread->u_len;
 	int ret = 0, lzerr;
 	uchar *c_buf;
@@ -1853,6 +1888,9 @@ int close_stream_in(rzip_control *control, void *ss)
    so do not compress any block that is incompressible by lzo. */
 static int lzo_compresses(rzip_control *control, uchar *s_buf, i64 s_len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(71);
+#endif
 	lzo_bytep wrkmem = NULL;
 	lzo_uint in_len, test_len = s_len, save_len = s_len;
 	lzo_uint dlen;

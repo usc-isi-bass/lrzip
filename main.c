@@ -1,3 +1,7 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
 /*
    Copyright (C) 2006-2016 Con Kolivas
    Copyright (C) 2011 Peter Hyman
@@ -307,6 +311,9 @@ static const char *coptions = "bcCdefghHikKlLnN:o:O:p:PrS:tTUm:vVw:z?123456789";
 
 int main(int argc, char *argv[])
 {
+#ifndef ZTRIM_DONT_INSTR
+    ztrim_initIteration(200);
+#endif
 	bool lrzcat = false, compat = false, recurse = false;
 	struct timeval start_time, end_time;
 	struct sigaction handler;

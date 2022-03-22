@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /*
    Copyright (C) 2006-2016 Con Kolivas
    Copyright (C) 1998 Andrew Tridgell
@@ -101,6 +106,9 @@ static struct level {
 
 static void remap_low_sb(rzip_control *control, struct sliding_buffer *sb)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(72);
+#endif
 	i64 new_offset;
 
 	new_offset = sb->offset_search;
@@ -118,6 +126,9 @@ static void remap_low_sb(rzip_control *control, struct sliding_buffer *sb)
 
 static inline void remap_high_sb(rzip_control *control, struct sliding_buffer *sb, i64 p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(73);
+#endif
 	if (unlikely(munmap(sb->buf_high, sb->size_high)))
 		failure("Failed to munmap in remap_high_sb\n");
 	sb->size_high = sb->high_length; /* In case we shrunk it when we hit the end of the file */
@@ -142,6 +153,9 @@ static inline void remap_high_sb(rzip_control *control, struct sliding_buffer *s
  * a hot function during the rzip phase */
 static uchar *sliding_get_sb(rzip_control *control, i64 p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(74);
+#endif
 	struct sliding_buffer *sb = &control->sb;
 	i64 sbo;
 
@@ -162,6 +176,9 @@ static uchar *sliding_get_sb(rzip_control *control, i64 p)
  */
 static inline i64 sliding_get_sb_range(rzip_control *control, i64 p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(75);
+#endif
 	struct sliding_buffer *sb = &control->sb;
 	i64 sbo, sbs;
 
@@ -187,6 +204,9 @@ static void single_mcpy(rzip_control *control, unsigned char *buf, i64 offset, i
 
 static void sliding_mcpy(rzip_control *control, unsigned char *buf, i64 offset, i64 len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(76);
+#endif
 	i64 n = 0;
 
 	while (n < len) {
@@ -226,6 +246,9 @@ static void put_header(rzip_control *control, void *ss, uchar head, i64 len)
 static inline void put_match(rzip_control *control, struct rzip_state *st,
 			     i64 p, i64 offset, i64 len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(77);
+#endif
 	do {
 		i64 ofs;
 		i64 n = len;
@@ -247,6 +270,9 @@ static inline void put_match(rzip_control *control, struct rzip_state *st,
 static inline void write_sbstream(rzip_control *control, void *ss, int stream,
 				 i64 p, i64 len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(78);
+#endif
 	struct stream_info *sinfo = ss;
 
 	while (len) {
@@ -265,6 +291,9 @@ static inline void write_sbstream(rzip_control *control, void *ss, int stream,
 
 static void put_literal(rzip_control *control, struct rzip_state *st, i64 last, i64 p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(79);
+#endif
 	do {
 		i64 len = p - last;
 
@@ -321,6 +350,9 @@ static inline bool lesser_bitness(tag a, tag b)
    works better in theory, but modern caches make this 20% faster. */
 static void insert_hash(struct rzip_state *st, tag t, i64 offset)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(80);
+#endif
 	i64 h, victim_h = 0, round = 0;
 	/* If we need to kill one, this will be it. */
 	static i64 victim_round = 0;
@@ -374,6 +406,9 @@ static void insert_hash(struct rzip_state *st, tag t, i64 offset)
    Returns tag requirement for any new entries. */
 static inline tag clean_one_from_hash(rzip_control *control, struct rzip_state *st)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(81);
+#endif
 	struct hash_entry *he;
 	tag better_than_min;
 
@@ -422,6 +457,9 @@ static void sliding_next_tag(rzip_control *control, struct rzip_state *st, i64 p
 
 static tag single_full_tag(rzip_control *control, struct rzip_state *st, i64 p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(82);
+#endif
 	tag ret = 0;
 	int i;
 	uchar u;
@@ -435,6 +473,9 @@ static tag single_full_tag(rzip_control *control, struct rzip_state *st, i64 p)
 
 static tag sliding_full_tag(rzip_control *control, struct rzip_state *st, i64 p)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(83);
+#endif
 	tag ret = 0;
 	int i;
 	uchar *u;
@@ -450,6 +491,9 @@ static i64
 single_match_len(rzip_control *control, struct rzip_state *st, i64 p0, i64 op,
 		 i64 end, i64 *rev)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(84);
+#endif
 	i64 p, len;
 
 	if (op >= p0)
@@ -482,6 +526,9 @@ static i64
 sliding_match_len(rzip_control *control, struct rzip_state *st, i64 p0, i64 op,
 		  i64 end, i64 *rev)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(85);
+#endif
 	i64 p, len;
 
 	if (op >= p0)
@@ -514,6 +561,9 @@ static inline i64
 find_best_match(rzip_control *control, struct rzip_state *st, tag t, i64 p,
 		i64 end, i64 *offset, i64 *reverse)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(86);
+#endif
 	struct hash_entry *he;
 	i64 length = 0;
 	i64 rev;
@@ -553,6 +603,9 @@ find_best_match(rzip_control *control, struct rzip_state *st, tag t, i64 p,
 
 static void show_distrib(rzip_control *control, struct rzip_state *st)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(87);
+#endif
 	struct hash_entry *he;
 	i64 primary = 0;
 	i64 total = 0;
@@ -581,6 +634,9 @@ static void show_distrib(rzip_control *control, struct rzip_state *st)
 /* Perform all checksumming in a separate thread to speed up the hash search. */
 static void *cksumthread(void *data)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(88);
+#endif
 	rzip_control *control = (rzip_control *)data;
 
 	pthread_detach(pthread_self());
@@ -603,6 +659,9 @@ static inline void cksum_update(rzip_control *control)
 static inline void hash_search(rzip_control *control, struct rzip_state *st,
 			       double pct_base, double pct_multiple)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(89);
+#endif
 	i64 cksum_limit = 0, p, end, cksum_chunks, cksum_remains, i;
 	tag t = 0, tag_mask = (1 << st->level->initial_freq) - 1;
 	struct sliding_buffer *sb = &control->sb;
@@ -790,6 +849,9 @@ static inline void init_hash_indexes(struct rzip_state *st)
 
 static inline void *fake_mremap(void *old_address, size_t old_size, size_t new_size, int flags __UNUSED__)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(90);
+#endif
 	if (new_size > old_size) {
 		fprintf(stderr, "fake_mremap: This should only be used to shrink things. I'm not bothering with this.\n");
 		exit(1);
@@ -815,6 +877,9 @@ static inline void *fake_mremap(void *old_address, size_t old_size, size_t new_s
 static inline void mmap_stdin(rzip_control *control, uchar *buf,
 			      struct rzip_state *st)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(91);
+#endif
 	i64 len = st->chunk_size;
 	uchar *offset_buf = buf;
 	ssize_t ret;
@@ -854,6 +919,9 @@ static inline void
 init_sliding_mmap(rzip_control *control, struct rzip_state *st, int fd_in,
 		  i64 offset)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(92);
+#endif
 	struct sliding_buffer *sb = &control->sb;
 
 	/* Initialise the high buffer. One page size is fastest to manipulate */
@@ -878,6 +946,9 @@ static inline void
 rzip_chunk(rzip_control *control, struct rzip_state *st, int fd_in, int fd_out,
 	   i64 offset, double pct_base, double pct_multiple)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(93);
+#endif
 	struct sliding_buffer *sb = &control->sb;
 
 	init_sliding_mmap(control, st, fd_in, offset);
@@ -908,6 +979,9 @@ rzip_chunk(rzip_control *control, struct rzip_state *st, int fd_in, int fd_out,
 /* compress a whole file chunks at a time */
 void rzip_fd(rzip_control *control, int fd_in, int fd_out)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(94);
+#endif
 	struct sliding_buffer *sb = &control->sb;
 
 	/* add timers for ETA estimates
@@ -1230,6 +1304,9 @@ retry:
 
 void rzip_control_free(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(95);
+#endif
 	size_t x;
 	if (!control)
 		return;

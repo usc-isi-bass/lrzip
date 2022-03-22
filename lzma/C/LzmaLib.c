@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /* LzmaLib.c -- LZMA library wrapper
 2008-08-05
 Igor Pavlov
@@ -23,6 +28,9 @@ MY_STDAPI LzmaCompress(unsigned char *dest, size_t  *destLen, const unsigned cha
   int numThreads /* 1 or 2, default = 2 */
 )
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(132);
+#endif
   CLzmaEncProps props;
   LzmaEncProps_Init(&props);
   props.level = level;

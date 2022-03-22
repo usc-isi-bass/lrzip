@@ -1,3 +1,8 @@
+#ifndef ZTRIM_H
+#define ZTRIM_H
+#include <libztrim.h>
+#endif
+
 /*
    Copyright (C) 2006-2016 Con Kolivas
    Copyright (C) 2011 Peter Hyman
@@ -61,6 +66,9 @@ static void release_hashes(rzip_control *control);
 
 static i64 fdout_seekto(rzip_control *control, i64 pos)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(1);
+#endif
 	if (TMP_OUTBUF) {
 		pos -= control->out_relofs;
 		control->out_ofs = pos;
@@ -77,6 +85,9 @@ static i64 fdout_seekto(rzip_control *control, i64 pos)
 # include <sys/sysctl.h>
 i64 get_ram(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(2);
+#endif
 	int mib[2];
 	size_t len;
 	i64 *p, ramsize;
@@ -93,6 +104,9 @@ i64 get_ram(rzip_control *control)
 #else /* __APPLE__ */
 i64 get_ram(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(3);
+#endif
 	i64 ramsize;
 	FILE *meminfo;
 	char aux[256];
@@ -121,6 +135,9 @@ i64 get_ram(rzip_control *control)
 
 i64 nloops(i64 seconds, uchar *b1, uchar *b2)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(4);
+#endif
 	i64 nloops;
 	int nbits;
 
@@ -137,6 +154,9 @@ i64 nloops(i64 seconds, uchar *b1, uchar *b2)
 
 bool write_magic(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(5);
+#endif
 	char magic[MAGIC_LEN] = { 
 		'L', 'R', 'Z', 'I', LRZIP_MAJOR_VERSION, LRZIP_MINOR_VERSION 
 	};
@@ -185,6 +205,9 @@ static inline i64 enc_loops(uchar b1, uchar b2)
 
 static bool get_magic(rzip_control *control, char *magic)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(6);
+#endif
 	int encrypted, md5, i;
 	i64 expected_size;
 	uint32_t v;
@@ -250,6 +273,9 @@ static bool get_magic(rzip_control *control, char *magic)
 
 bool read_magic(rzip_control *control, int fd_in, i64 *expected_size)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(7);
+#endif
 	char magic[MAGIC_LEN];
 
 	memset(magic, 0, sizeof(magic));
@@ -266,6 +292,9 @@ bool read_magic(rzip_control *control, int fd_in, i64 *expected_size)
 /* preserve ownership and permissions where possible */
 static bool preserve_perms(rzip_control *control, int fd_in, int fd_out)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(8);
+#endif
 	struct stat st;
 
 	if (unlikely(fstat(fd_in, &st)))
@@ -281,6 +310,9 @@ static bool preserve_perms(rzip_control *control, int fd_in, int fd_out)
 
 static bool preserve_times(rzip_control *control, int fd_in)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(9);
+#endif
 	struct utimbuf times;
 	struct stat st;
 
@@ -297,6 +329,9 @@ static bool preserve_times(rzip_control *control, int fd_in)
 /* Open a temporary outputfile to emulate stdout */
 int open_tmpoutfile(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(10);
+#endif
 	int fd_out;
 
 	if (STDOUT && !TEST_ONLY)
@@ -320,6 +355,9 @@ int open_tmpoutfile(rzip_control *control)
 
 static bool fwrite_stdout(rzip_control *control, void *buf, i64 len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(11);
+#endif
 	uchar *offset_buf = buf;
 	ssize_t ret;
 	i64 total;
@@ -343,6 +381,9 @@ static bool fwrite_stdout(rzip_control *control, void *buf, i64 len)
 
 bool write_fdout(rzip_control *control, void *buf, i64 len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(12);
+#endif
 	uchar *offset_buf = buf;
 	ssize_t ret;
 
@@ -359,6 +400,9 @@ bool write_fdout(rzip_control *control, void *buf, i64 len)
 
 bool flush_tmpoutbuf(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(13);
+#endif
 	if (!TEST_ONLY) {
 		print_maxverbose("Dumping buffer to physical file.\n");
 		if (STDOUT) {
@@ -377,6 +421,9 @@ bool flush_tmpoutbuf(rzip_control *control)
 /* Dump temporary outputfile to perform stdout */
 bool dump_tmpoutfile(rzip_control *control, int fd_out)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(14);
+#endif
 	FILE *tmpoutfp;
 	int tmpchar;
 
@@ -406,6 +453,9 @@ bool dump_tmpoutfile(rzip_control *control, int fd_out)
  * to temporary file */
 bool write_fdin(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(15);
+#endif
 	uchar *offset_buf = control->tmp_inbuf;
 	i64 len = control->in_len;
 	ssize_t ret;
@@ -424,6 +474,9 @@ bool write_fdin(rzip_control *control)
 /* Open a temporary inputfile to perform stdin decompression */
 int open_tmpinfile(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(16);
+#endif
 	int fd_in = -1;
 
 	/* Use temporary directory if there is one */
@@ -474,6 +527,9 @@ int open_tmpinfile(rzip_control *control)
 
 static bool read_tmpinmagic(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(17);
+#endif
 	char magic[MAGIC_LEN];
 	int i, tmpchar;
 
@@ -490,6 +546,9 @@ static bool read_tmpinmagic(rzip_control *control)
 /* Read data from stdin into temporary inputfile */
 bool read_tmpinfile(rzip_control *control, int fd_in)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(18);
+#endif
 	FILE *tmpinfp;
 	int tmpchar;
 
@@ -513,6 +572,9 @@ bool read_tmpinfile(rzip_control *control, int fd_in)
  * a pseudo-temporary file */
 static bool open_tmpoutbuf(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(19);
+#endif
 	i64 maxlen = control->maxram;
 	void *buf;
 
@@ -583,6 +645,9 @@ void close_tmpinbuf(rzip_control *control)
 
 static int get_pass(rzip_control *control, char *s)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(20);
+#endif
 	int len;
 
 	memset(s, 0, PASS_LEN - SALT_LEN);
@@ -601,6 +666,9 @@ static int get_pass(rzip_control *control, char *s)
 
 static bool get_hash(rzip_control *control, int make_hash)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(21);
+#endif
 	char *passphrase, *testphrase;
 	struct termios termios_p;
 
@@ -679,6 +747,9 @@ static void release_hashes(rzip_control *control)
 */
 bool decompress_file(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(22);
+#endif
 	char *tmp, *tmpoutfile, *infilecopy = NULL;
 	int fd_in, fd_out = -1, fd_hist = -1;
 	i64 expected_size = 0, free_space;
@@ -867,6 +938,9 @@ bool decompress_file(rzip_control *control)
 bool get_header_info(rzip_control *control, int fd_in, uchar *ctype, i64 *c_len,
 		     i64 *u_len, i64 *last_head, int chunk_bytes)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(23);
+#endif
 	if (unlikely(read(fd_in, ctype, 1) != 1))
 		fatal_return(("Failed to read in get_header_info\n"), false);
 
@@ -908,6 +982,9 @@ bool get_header_info(rzip_control *control, int fd_in, uchar *ctype, i64 *c_len,
 
 static double percentage(i64 num, i64 den)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(24);
+#endif
 	double d_num, d_den;
 
 	if (den < 100) {
@@ -924,6 +1001,9 @@ static double percentage(i64 num, i64 den)
 
 bool get_fileinfo(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(25);
+#endif
 	i64 u_len, c_len, last_head, utotal = 0, ctotal = 0, ofs = 25, stream_head[2];
 	i64 expected_size, infile_size, chunk_size = 0, chunk_total = 0;
 	int header_length, stream = 0, chunk = 0;
@@ -1146,6 +1226,9 @@ error:
 */
 bool compress_file(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(26);
+#endif
 	const char *tmp, *tmpinfile; 	/* we're just using this as a proxy for control->infile.
 					 * Spares a compiler warning
 					 */
@@ -1278,6 +1361,9 @@ error:
 
 bool initialise_control(rzip_control *control)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(27);
+#endif
 	time_t now_t, tdiff;
 	char *eptr; /* for environment */
 
