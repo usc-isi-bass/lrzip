@@ -1770,6 +1770,9 @@ void write_stream(rzip_control *control, void *ss, int streamno, uchar *p, i64 l
    on failure */
 i64 read_stream(rzip_control *control, void *ss, int streamno, uchar *p, i64 len)
 {
+#ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(0);
+#endif
 	struct stream_info *sinfo = ss;
 	i64 ret = 0;
 
