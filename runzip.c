@@ -220,6 +220,7 @@ ztrim_fInstrument(42);
 static i64 unzip_match(rzip_control *control, void *ss, i64 len, uint32 *cksum, int chunk_bytes)
 {
 #ifndef ZTRIM_DONT_INSTR
+ztrim_fInstrument(0);
 ztrim_fInstrument(43);
 #endif
 	i64 offset, n, total, cur_pos;
