@@ -803,6 +803,9 @@ bool decompress_file(rzip_control *control)
 	if (!STDIN) {
 		if (unlikely(!read_magic(control, fd_in, &expected_size)))
 			return false;
+#ifdef MAGMA_ENABLE_CANARIES
+        MAGMA_LOG("ZIP002_1", expected_size < 0);
+#endif
 	}
 
 	if (!STDOUT && !TEST_ONLY) {
